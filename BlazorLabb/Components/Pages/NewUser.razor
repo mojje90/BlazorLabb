@@ -1,0 +1,32 @@
+﻿@page "/newUser"
+@using BlazorLabb.PersonInfo
+@rendermode InteractiveServer
+
+@if (showForm)
+{
+    <EditForm Model="p1" OnValidSubmit="ShowAddConfirm">
+        <DataAnnotationsValidator />
+        <label>Name</label>
+        <InputText @bind-Value="p1.Name" />
+        <ValidationMessage For="(()=>p1.Name)" />
+        <label>Email</label>
+        <InputText @bind-Value="p1.Email" />
+        <ValidationMessage For="(()=> p1.Email)" />
+
+        <button type="submit">Add</button>
+    </EditForm>
+}
+else
+{
+    <p>New user added with Name: <strong>@p1.Name</strong> and Email: <strong>@p1.Email</strong></p>
+}
+
+@code {
+    public bool showForm = true;
+    Person p1 = new Person();
+
+    public void ShowAddConfirm()
+    {
+        showForm = false;
+    }
+}
