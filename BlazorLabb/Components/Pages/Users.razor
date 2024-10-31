@@ -1,0 +1,48 @@
+﻿@page "/Users"
+@using BlazorLabb.PersonInfo
+@rendermode InteractiveServer
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Street</th>
+                <th>City</th>
+                <th>ZipCode</th>
+                <th>Company</th>
+                <th>CatchPhrase</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in persons.Take(limit))
+            {
+
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Name</td>
+                    <td>>@p.Email</td>
+                    <td>>@p.Adress.Street</td>
+                    <td>@p.Adress.City</td>
+                    <td>@p.Adress.ZipCode</td>
+                    <td>@p.Company.Name</td>
+                    <td>@p.Company.CatchPhrase</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public bool isLoading = true;
+    List<Person> persons = new List<Person>();
+    private int limit = 5;
+}
