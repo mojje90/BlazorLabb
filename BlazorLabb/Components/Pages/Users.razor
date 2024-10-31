@@ -37,7 +37,8 @@ else
                     <td>@p.Company.CatchPhrase</td>
                 </tr>
             }
-            
+            <button @onclick="@ShowTen">Show more/less</button>
+
         </tbody>
     </table>
 }
@@ -52,6 +53,18 @@ else
     {
         await Task.Delay(1500);
         isLoading = false;
-        persons = memoryData.GetUsers();
+        persons = memoryData.GetUsers().OrderBy(x =>x.Name).ToList();
+    }
+
+    public void ShowTen()
+    {
+        if(limit == 10)
+        {
+            limit = 5;
+        }
+        else if (limit == 5)
+        {
+            limit = 10;
+        }
     }
 }
