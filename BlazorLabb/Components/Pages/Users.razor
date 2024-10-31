@@ -29,14 +29,15 @@ else
                 <tr>
                     <td>@p.Id</td>
                     <td>@p.Name</td>
-                    <td>>@p.Email</td>
-                    <td>>@p.Adress.Street</td>
+                    <td>@p.Email</td>
+                    <td>@p.Adress.Street</td>
                     <td>@p.Adress.City</td>
                     <td>@p.Adress.ZipCode</td>
                     <td>@p.Company.Name</td>
                     <td>@p.Company.CatchPhrase</td>
                 </tr>
             }
+            
         </tbody>
     </table>
 }
@@ -45,4 +46,12 @@ else
     public bool isLoading = true;
     List<Person> persons = new List<Person>();
     private int limit = 5;
+    IFetchData memoryData = new FetchInMemoryData();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1500);
+        isLoading = false;
+        persons = memoryData.GetUsers();
+    }
 }
