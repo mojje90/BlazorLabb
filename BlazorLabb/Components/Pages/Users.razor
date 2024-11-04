@@ -23,7 +23,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var p in persons.Take(limit))
+            @foreach (var p in displayedUsers.Take(limit))
             {
 
                 <tr>
@@ -44,24 +44,30 @@ else
     <button @onclick="@ChangeDataSource">Change data source</button>
     <button @onclick="@SortByName">Sort by name</button>
     <button @onclick="@SortById">Sort by Id</button>
+    <input type="text" @bind="@searchValue" />
+    <button @onclick="@SearchUser">Search user</button>
+    <button @onclick="@ResetSearch">Reset Search</button>
 }
 
 @code {
     public bool isLoading = true;
-    List<Person> persons = new List<Person>();
+    List<Person> allUsers = new List<Person>();
     private int limit = 5;
     IFetchData memoryData = new FetchInMemoryData();
     IFetchData apiData = new FetchApiData();
     bool dataSourceToggle = true;
     bool sortByNameToggle = true;
     bool sortByIdToggle = true;
+    string? searchValue = null;
+    List<Person> displayedUsers = new List<Person>();
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1500);
         isLoading = false;
         var fetchedPersons = await memoryData.GetUsers();
-        persons = fetchedPersons.OrderBy(x => x.Name).ToList();
+        displayedUsers = fetchedPersons.OrderBy(x => x.Name).ToList();
+        allUsers = displayedUsers;
     }
 
     public void ShowTen()
@@ -79,12 +85,13 @@ else
     {
         if (dataSourceToggle)
         {
-            persons = await apiData.GetUsers();
-
+            allUsers = await apiData.GetUsers();
+            displayedUsers = allUsers;
         }
         else
         {
-            persons = await memoryData.GetUsers();
+            allUsers = await memoryData.GetUsers();
+            displayedUsers = allUsers;
         }
         dataSourceToggle = !dataSourceToggle;
     }
@@ -92,12 +99,12 @@ else
     {
         if (sortByNameToggle)
         {
-            persons = persons.OrderBy(x => x.Name).ToList();
+            displayedUsers = allUsers.OrderBy(x => x.Name).ToList();
             sortByNameToggle = !sortByNameToggle;
         }
         else
         {
-            persons = persons.OrderByDescending(x => x.Name).ToList();
+            displayedUsers = allUsers.OrderByDescending(x => x.Name).ToList();
             sortByNameToggle = !sortByNameToggle;
         }
     }
@@ -105,13 +112,22 @@ else
     {
         if (sortByIdToggle)
         {
-            persons = persons.OrderBy(x => x.Id).ToList();
+            displayedUsers = allUsers.OrderBy(x => x.Id).ToList();
             sortByIdToggle = !sortByIdToggle;
         }
         else
         {
-            persons = persons.OrderByDescending(x => x.Id).ToList();
+            displayedUsers = allUsers.OrderByDescending(x => x.Id).ToList();
             sortByIdToggle = !sortByIdToggle;
         }
+    }
+    public void SearchUser()
+    {
+        displayedUsers = allUsers.Where(x => x.Name.Contains(searchValue, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+    public void ResetSearch()
+    {
+        searchValue = string.Empty;
+        displayedUsers = allUsers;
     }
 }
