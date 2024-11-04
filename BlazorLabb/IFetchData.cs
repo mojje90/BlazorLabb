@@ -4,6 +4,6 @@ namespace BlazorLabb
 {
     public interface IFetchData
     {
-        List<Person> GetUsers();
+        Task<List<Person>> GetUsers();
     }
 }

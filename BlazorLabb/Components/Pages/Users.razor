@@ -38,6 +38,7 @@ else
                 </tr>
             }
             <button @onclick="@ShowTen">Show more/less</button>
+            <button @onclick="@ChangeDataSource">Change data source</button>
 
         </tbody>
     </table>
@@ -48,12 +49,15 @@ else
     List<Person> persons = new List<Person>();
     private int limit = 5;
     IFetchData memoryData = new FetchInMemoryData();
+    IFetchData apiData = new FetchApiData();
+    bool dataSourceToggle = true;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1500);
         isLoading = false;
-        persons = memoryData.GetUsers().OrderBy(x =>x.Name).ToList();
+        var fetchedPersons = await memoryData.GetUsers();
+        persons = fetchedPersons.OrderBy(x =>x.Name).ToList();
     }
 
     public void ShowTen()
@@ -66,5 +70,19 @@ else
         {
             limit = 10;
         }
+    }
+
+    public async Task ChangeDataSource()
+    {
+        if (dataSourceToggle)
+        {
+            persons = await apiData.GetUsers();
+
+        }
+        else
+        {
+            persons = await memoryData.GetUsers();
+        }
+        dataSourceToggle = !dataSourceToggle;
     }
 }

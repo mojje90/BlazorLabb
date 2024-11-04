@@ -4,7 +4,7 @@ namespace BlazorLabb
 {
     public class FetchInMemoryData : IFetchData
     {
-        public List<Person> GetUsers()
+        public Task<List<Person>> GetUsers()
         {
             List<Person> people = new List<Person>
             {
@@ -19,7 +19,7 @@ namespace BlazorLabb
                 new Person { Id = 9, Name = "David", Email = "David@msn.se", Adress = new Adress { City = "Lund", Street = "Lundagatan", ZipCode = "98765" }, Company = new Company { Name = "Adobe", CatchPhrase = "Changing the world through digital experiences." } },
                 new Person { Id = 10, Name = "Sara", Email = "Sara@msn.se", Adress = new Adress { City = "Norrköping", Street = "Norrköpingsgatan", ZipCode = "23456" }, Company = new Company { Name = "IBM", CatchPhrase = "Think." } }
             };
-            return people;
+            return Task.FromResult(people);
         }
     }
 }
