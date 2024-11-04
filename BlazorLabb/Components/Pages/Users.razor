@@ -9,7 +9,7 @@
 else
 {
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -37,11 +37,13 @@ else
                     <td>@p.Company.CatchPhrase</td>
                 </tr>
             }
-            <button @onclick="@ShowTen">Show more/less</button>
-            <button @onclick="@ChangeDataSource">Change data source</button>
 
         </tbody>
     </table>
+    <button @onclick="@ShowTen">Show more/less</button>
+    <button @onclick="@ChangeDataSource">Change data source</button>
+    <button @onclick="@SortByName">Sort by name</button>
+    <button @onclick="@SortById">Sort by Id</button>
 }
 
 @code {
@@ -51,18 +53,20 @@ else
     IFetchData memoryData = new FetchInMemoryData();
     IFetchData apiData = new FetchApiData();
     bool dataSourceToggle = true;
+    bool sortByNameToggle = true;
+    bool sortByIdToggle = true;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1500);
         isLoading = false;
         var fetchedPersons = await memoryData.GetUsers();
-        persons = fetchedPersons.OrderBy(x =>x.Name).ToList();
+        persons = fetchedPersons.OrderBy(x => x.Name).ToList();
     }
 
     public void ShowTen()
     {
-        if(limit == 10)
+        if (limit == 10)
         {
             limit = 5;
         }
@@ -71,7 +75,6 @@ else
             limit = 10;
         }
     }
-
     public async Task ChangeDataSource()
     {
         if (dataSourceToggle)
@@ -84,5 +87,31 @@ else
             persons = await memoryData.GetUsers();
         }
         dataSourceToggle = !dataSourceToggle;
+    }
+    public void SortByName()
+    {
+        if (sortByNameToggle)
+        {
+            persons = persons.OrderBy(x => x.Name).ToList();
+            sortByNameToggle = !sortByNameToggle;
+        }
+        else
+        {
+            persons = persons.OrderByDescending(x => x.Name).ToList();
+            sortByNameToggle = !sortByNameToggle;
+        }
+    }
+    public void SortById()
+    {
+        if (sortByIdToggle)
+        {
+            persons = persons.OrderBy(x => x.Id).ToList();
+            sortByIdToggle = !sortByIdToggle;
+        }
+        else
+        {
+            persons = persons.OrderByDescending(x => x.Id).ToList();
+            sortByIdToggle = !sortByIdToggle;
+        }
     }
 }
